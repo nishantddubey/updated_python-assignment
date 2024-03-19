@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3 File Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+<div class="container">
+
+
+<!-- Bucket creation and deletion  -->
+ <div class="bucket_manager">
+    <h1><u>S3 Bucket Manager</u></h1>
+    <u><h2>Bucket Create</h2></u>
+<form action="/create-bucket" method="post">
+    <input type="text" name="bucket-name" placeholder="Enter Bucket Name">
+    <button type="submit">Create Bucket</button>
+</form>
+
+<h2>All Buckets</h2>
+<ul>
+    {% for bucket in buckets %}
+        <li>{{ bucket }} 
+            <form action="/delete-bucket" method="post" style="display: inline;">
+                <input type="hidden" name="bucket-name" value="{{ bucket }}">
+                <button type="submit">Delete Bucket</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
+</div>
+
+ 
+    <!-- All opearation folder creation and deletion -->
+    <div class="operations">
+            <h1><u>S3 File Manager</u></h1>
+        <u><h2>All operations</h2></u>
+        <h3>Folders</h3>
+        <form action="/create-folder" method="post">
+            <input type="text" name="folder-name" placeholder="Folder Name">
+            <button type="submit">Create Folder</button>
+        </form>
+        <ul>
+            {% for folder in folders %}
+            <li>
+                {{ folder }}
+                <form action="/delete-folder" method="post" style="display: inline;">
+                    <input type="hidden" name="folder-name" value="{{ folder }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <h3>Upload File</h3>
+        <form action="/upload-file" method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <select name="folder">
+                {% for folder in folders %}
+                <option value="{{ folder }}">{{ folder }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Upload File</button>
+        </form>
+        <h3>Copy File</h3>
+        <form action="/copy-file" method="post">
+            <select name="source-file">
+                {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+            <select name="destination-folder">
+                {% for folder in folders %}
+                <option value="{{ folder }}">{{ folder }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Copy</button>
+        </form>
+        <h3>Move File</h3>
+        <form action="/move-file" method="post">
+            <select name="source-file">
+                {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+            <select name="destination-folder">
+                {% for folder in folders %}
+                <option value="{{ folder }}">{{ folder }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Move</button>
+        </form>
+        </div>  
+
+ 
+    <!-- Listing the content   -->
+        <div class="lists">
+            <h1><u>Listing of Contents</u></h1>
+        <u><h2>All Files List</h2></u>
+
+            {% for folder, files in folders.items() %}
+            <h3>Files in {{ folder }} folder:</h3>
+            <ol>
+                {% for file in files %}
+                <li>{{ file }} 
+                    <form action="/delete-file" method="post" style="display: inline;">
+                        <input type="hidden" name="file-name" value="{{ file }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ol>
+            {% endfor %}
+    
+            </div>
+
+    </div>
+</table>
+</body>
+</html>
